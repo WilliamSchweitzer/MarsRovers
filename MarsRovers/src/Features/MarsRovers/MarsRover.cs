@@ -24,7 +24,7 @@ namespace MarsRovers.src.Features.MarsRover
 
         public MarsRover(string? xAxisBoundInput, string? yAxisBoundInput, string? xOriginInput, string? yOriginInput, string? directionalHeadingInput, string? turnMoveInstructionsInput)
         {
-            // ulong must be 0-64bit, therefore code should throw ArgumentException otherwise. Console.ReadLine() returns a string.
+            // ulong must be 0-64bit, therefore code should throw OverflowException otherwise. Console.ReadLine() returns a string.
 
             try
             {
@@ -33,7 +33,7 @@ namespace MarsRovers.src.Features.MarsRover
                 xOrigin = Convert.ToUInt64(xOriginInput);
                 yOrigin = Convert.ToUInt64(yOriginInput);
             }
-            catch (ArgumentException e)
+            catch (OverflowException e)
             {
                 Console.WriteLine("{0}: {1}", e.GetType().Name, e.Message);
             }

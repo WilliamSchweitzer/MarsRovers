@@ -16,8 +16,6 @@ namespace MarsRovers.src.Services
         // Note: Heading will default to 'N'
         public Position Calculate(string movementInstructions, Position position)
         {
-            Console.WriteLine("Moved to:");
-
             // Usecase: No movement instructions given
             if (String.IsNullOrEmpty(movementInstructions)) 
             { 
