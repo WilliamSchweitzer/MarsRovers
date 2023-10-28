@@ -9,6 +9,32 @@ using System.Text;
 using System.IO;
 using MarsRovers.src.Core.Sctructs;
 
+string RecursivelyGenerateUUID(HashSet<string> uuids, string currentUUID = "") {
+    // Return currentUUID, if the parameter passed is not an empty string - base case
+    if(!string.IsNullOrEmpty(currentUUID))
+    {
+        return currentUUID;
+    }
+    else
+    {
+        // UUID to generate
+        currentUUID = Guid.NewGuid().ToString();
+
+        // If generated UUID is not in the HashSet, add it and return generated UUID - recusrion complete
+        if (!uuids.Contains(currentUUID))
+        {
+            uuids.Add(currentUUID);
+            return currentUUID;
+        }
+        // Else, UUID is contained in in the HashSet (UUID not unique), return an empty string to the recursive function to generate a new UUID - recursive step (start recursion)
+        else
+        {
+            return RecursivelyGenerateUUID(uuids, string.Empty);
+        }
+    }
+    
+}
+
 List<Tuple<string, string, string, string, string, string>> StartManualInput()
 {
     AnsiConsole.Markup("You may being entering instructions line by line. [deeppink3]Return an empty line to stop.[/]\n");
@@ -293,6 +319,9 @@ Dictionary<MarsRover, MarsRover> ExecuteMarsRoverCaluclationsInParallel(List<Tup
     // Create in-memory cache inorder to cache intial MarsRover to reduce space complexity
     ObjectCache cache = MemoryCache.Default;
 
+    // Create hashtable to store UUIDS from O(1) lookup - Need a universal unique identifer to store/retrieve the correct object from in-memory cache
+    HashSet<string> uuids = new HashSet<string>();
+
     // Create dicitionary to be returned - Use dictionary because retrieving values via. is close to O(1) meaning constant lookup time
     // Key = Initial MarsRover object, value = MarsRover object after calculation
     Dictionary<MarsRover, MarsRover> marsRoverKeyValuePairs = new Dictionary<MarsRover, MarsRover>();
@@ -336,15 +365,26 @@ Dictionary<MarsRover, MarsRover> ExecuteMarsRoverCaluclationsInParallel(List<Tup
 
             if (cb.TryTake(out marsRover))
             {
+                // Store UUID for multiple references
+                cache.Set(marsRover.ToString(), marsRover, DateTimeOffset.FromUnixTimeMilliseconds(10));
+
                 // Be careful to not replace in-memory cache value as a result of multiple threads running concurrently
                 // Cache inital MarsRover to avoid creating an additional object here - Last 10ms at most
-                cache.Set($"initalRover{itemsInBag}", marsRover, DateTimeOffset.FromUnixTimeMilliseconds(10));
+                cache.Set($"initalRover{RecursivelyGenerateUUID(uuids)}", marsRover, DateTimeOffset.FromUnixTimeMilliseconds(10));
 
                 // Change marsRover to final value to be added to dictionary
                 marsRover.CalculateMomement();
 
                 // Retrieve inital MarsRover value from cache and add <inital, final> values to dictionary
                 // explicit cast object type return from in-memory cache to MarsRover is also required
+                //try
+                //{
+
+                //}
+                //catch(ArgumentNullException ex)
+                //{
+                //    // Incorrect instructions do not break the program, therefore marsRover passed may be null. If that is the case, add empty MarsRover
+                //}
                 marsRoverKeyValuePairs.Add((MarsRover)cache.Get($"initalRover{itemsInBag}"), marsRover);
 
                 // Increment itemsInBag by refernece to avoid copying the variable from memory
@@ -369,99 +409,134 @@ Dictionary<MarsRover, MarsRover> ExecuteMarsRoverCaluclationsInParallel(List<Tup
 }
 
 // Main:
-
-var table = new Table().Centered();
-
-AnsiConsole.Live(table)
-    .Start(ctx =>
-    {
-        table.AddColumn("Welcome to [underline red]Will Schweitzer's[/] [indianred1]Mars[/] Rovers - Coding Test Solution for Dealer[darkorange3]On[/]");
-        table.AddRow("[red]Note[/]: A Mars Rover's movement instructions are coded to ONLY respond to the inputs defined in the problem ('L', 'R', and 'M'). Additonally, instructions are expected to be given line by line as defined in the problem task. Therefore, wrongly inputed instructions will be skipped.");
-        table.AddEmptyRow();
-        ctx.Refresh();
-        Thread.Sleep(50);
-        table.AddRow("[yellow]Assumption[/] 1: A Mars Rover should not stop running if trying to leave the bounds of it's defined 2D plane.");
-        ctx.Refresh();
-        Thread.Sleep(50);
-        table.AddRow("[yellow]Assumption[/] 2: A Mars Rover should not have the ability to go into the negative X, Y axis as defined by the problem.");
-        ctx.Refresh();
-        Thread.Sleep(50);
-        table.AddRow("[yellow]Assumption[/] 3: A Mars Rover should not stop running if trying to leave the bounds of it's defined 2D plane.");
-        ctx.Refresh();
-        Thread.Sleep(50);
-        table.AddRow("[yellow]Assumption[/] 4: A Mars Rover should not be given a 2D plane that exceeds the range of a ulong on either axis.");
-        ctx.Refresh();
-        Thread.Sleep(50);
-        table.AddRow("[yellow]Assumption[/] 5: If a Mars Rover is given incorrect input, the program should not fail to execute.");
-        ctx.Refresh();
-        Thread.Sleep(50);
-        table.AddRow("[yellow]Assumption[/] 6: If a Mars Rover crashes for any reason, all other Mars Rovers should NOT crash.");
-        ctx.Refresh();
-        Thread.Sleep(50);
-        table.AddRow("[yellow]Assumption[/] 7: The maximum amount of Mars Rovers to be inputed should be no larger than 2^63 + 1.");
-        ctx.Refresh();
-        Thread.Sleep(50);
-        table.AddRow("[yellow]Assumption[/] 8: A Mars Rover can only move 1 value on the X or Y axis at a given time.");
-        ctx.Refresh();
-        Thread.Sleep(50);
-        table.AddRow("[yellow]Assumption[/] 9: A Mars Rover can be passed no instructions (Empty line) and be expected to not move.");
-        ctx.Refresh();
-        Thread.Sleep(50);
-    });
-
-if (!AnsiConsole.Confirm("Would you like to begin?"))
+string PromptUserForInput()
 {
-    AnsiConsole.MarkupLine("Ok... :(");
-}
+    // Prompt for input type
 
-
-// Prompt for input type
-
-var inputTypeSelection = AnsiConsole.Prompt(
-    new MultiSelectionPrompt<string>()
-        .PageSize(10)
-        .Title("You may either [red]manually[/] input data line by line OR input a [green].txt file[/] of lines to read favorite fruits?")
-        .MoreChoicesText("[grey](Move up and down to select option)[/]")
-        .InstructionsText("[grey](Press spacebar [blue][/] to toggle an option, [green][/] enter to accept)[/]")
-        .AddChoiceGroup("Input Type", new[]
-        {
+    var inputTypeSelection = AnsiConsole.Prompt(
+        new MultiSelectionPrompt<string>()
+            .PageSize(10)
+            .Title("You may either [red]manually[/] input data line by line OR input a [green].txt file[/] of lines to read favorite fruits?")
+            .MoreChoicesText("[grey](Move up and down to select option)[/]")
+            .InstructionsText("[grey](Press spacebar [blue][/] to toggle an option, [green][/] enter to accept)[/]")
+            .AddChoiceGroup("Input Type", new[]
+            {
             "Manual", "Text file (.txt)"
-        }));
+            }));
 
-// Validate one type was selected
+    // Validate one type was selected
 
-var inputType = inputTypeSelection.Count == 1 ? inputTypeSelection[0] : null;
-if (string.IsNullOrWhiteSpace(inputType))
-{
-    inputType = AnsiConsole.Prompt(
-        new SelectionPrompt<string>()
-            .Title("Ok, but if you could only choose [green]one input type[/]?")
-            .MoreChoicesText("[grey](Move up and down to reveal more types)[/]")
-            .AddChoices(inputTypeSelection));
+    var inputType = inputTypeSelection.Count == 1 ? inputTypeSelection[0] : null;
+    if (string.IsNullOrWhiteSpace(inputType))
+    {
+        inputType = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("Ok, but if you could only choose [green]one input type[/]?")
+                .MoreChoicesText("[grey](Move up and down to reveal more types)[/]")
+                .AddChoices(inputTypeSelection));
+    }
+
+    return inputType;
 }
 
-// Select input type to process
-
-switch (inputType)
+void ProcessInputByType(string inputType)
 {
-    case "Manual":
-        List<Tuple<string, string, string, string, string, string>> manualInput = StartManualInput();
-        ExecuteMarsRoverCaluclationsInParallel(manualInput);
-        break;
-    case "Text file (.txt)":
-        AnsiConsole.Markup("Note: The final line of the text file [deeppink3]MUST[/] be an empty newline. \n");
-        var path = AnsiConsole.Ask<string>("Please input the absolute path to your text file:");
-        List<Tuple<string, string, string, string, string, string>> textFileInput = StartTextFileInput(path);
-        ExecuteMarsRoverCaluclationsInParallel(textFileInput);
-        break;
-    default:
-        throw new NotImplementedException();
+    switch (inputType)
+    {
+        case "Manual":
+            List<Tuple<string, string, string, string, string, string>> manualInput = StartManualInput();
+            ExecuteMarsRoverCaluclationsInParallel(manualInput);
+            break;
+        case "Text file (.txt)":
+            AnsiConsole.Markup("Note: The final line of the text file [deeppink3]MUST[/] be an empty newline. \n");
+            var path = AnsiConsole.Ask<string>("Please input the absolute path to your text file:");
+            List<Tuple<string, string, string, string, string, string>> textFileInput = StartTextFileInput(path);
+            ExecuteMarsRoverCaluclationsInParallel(textFileInput);
+            break;
+        default:
+            throw new NotImplementedException();
+    }
 }
 
-
-// Thank you
-
-if (!AnsiConsole.Confirm("Please interact to end the ConsoleApp. Thanks you."))
+void ProcessUserInput()
 {
+    // Prompt for input type
+
+    string inputType = PromptUserForInput();
+
+    // Select input type to process
+
+    ProcessInputByType(inputType);
+}
+
+void InitalizeConsoleApp()
+{
+    var table = new Table().Centered();
+
+    AnsiConsole.Live(table)
+        .Start(ctx =>
+        {
+            table.AddColumn("Welcome to [underline red]Will Schweitzer's[/] [indianred1]Mars[/] Rovers - Coding Test Solution for Dealer[darkorange3]On[/]");
+            table.AddRow("[red]Note[/]: A Mars Rover's movement instructions are coded to ONLY respond to the inputs defined in the problem ('L', 'R', and 'M'). Additonally, instructions are expected to be given line by line as defined in the problem task. Therefore, wrongly inputed instructions will be skipped.");
+            table.AddEmptyRow();
+            ctx.Refresh();
+            Thread.Sleep(50);
+            table.AddRow("[yellow]Assumption[/] 1: A Mars Rover should not stop running if trying to leave the bounds of it's defined 2D plane.");
+            ctx.Refresh();
+            Thread.Sleep(50);
+            table.AddRow("[yellow]Assumption[/] 2: A Mars Rover should not have the ability to go into the negative X, Y axis as defined by the problem.");
+            ctx.Refresh();
+            Thread.Sleep(50);
+            table.AddRow("[yellow]Assumption[/] 3: A Mars Rover should not stop running if trying to leave the bounds of it's defined 2D plane.");
+            ctx.Refresh();
+            Thread.Sleep(50);
+            table.AddRow("[yellow]Assumption[/] 4: A Mars Rover should not be given a 2D plane that exceeds the range of a ulong on either axis.");
+            ctx.Refresh();
+            Thread.Sleep(50);
+            table.AddRow("[yellow]Assumption[/] 5: If a Mars Rover is given incorrect input, the program should not fail to execute.");
+            ctx.Refresh();
+            Thread.Sleep(50);
+            table.AddRow("[yellow]Assumption[/] 6: If a Mars Rover crashes for any reason, all other Mars Rovers should NOT crash.");
+            ctx.Refresh();
+            Thread.Sleep(50);
+            table.AddRow("[yellow]Assumption[/] 7: The maximum amount of Mars Rovers to be inputed should be no larger than 2^63 + 1.");
+            ctx.Refresh();
+            Thread.Sleep(50);
+            table.AddRow("[yellow]Assumption[/] 8: A Mars Rover can only move 1 value on the X or Y axis at a given time.");
+            ctx.Refresh();
+            Thread.Sleep(50);
+            table.AddRow("[yellow]Assumption[/] 9: A Mars Rover can be passed no instructions (Empty line) and be expected to not move.");
+            ctx.Refresh();
+            Thread.Sleep(50);
+        });
+
+    if (!AnsiConsole.Confirm("Would you like to begin?"))
+    {
+        AnsiConsole.MarkupLine("Ok... :(");
+    }
+    else
+    {
+        QueryUserUntilStopCommand();
+    }
+}
+
+bool QueryUserUntilStopCommand()
+{
+    // Read and process user input
+    ProcessUserInput();
+
+    // Confirm if user would like to input another file
+    if (!AnsiConsole.Confirm("Would you like input Mars Rover(s) instructions for processing again?"))
+    {
+        return false;
+    }
+    else
+    {
+        // Read and process user input by calling function recursivley
+        return QueryUserUntilStopCommand();
+    }
 
 }
+
+// Initalize ConsoleApp
+InitalizeConsoleApp();

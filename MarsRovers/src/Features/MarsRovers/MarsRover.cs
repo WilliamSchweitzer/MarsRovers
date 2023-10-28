@@ -67,5 +67,10 @@ namespace MarsRovers.src.Features.MarsRover
             MovementCalculator marsRoverCalculator = new MovementCalculator();
             Position = marsRoverCalculator.Calculate(TurnMoveInstructions, Position);
         }
+
+        public override string ToString()
+        {
+            return this..ToString();
+        }
     }
 }
