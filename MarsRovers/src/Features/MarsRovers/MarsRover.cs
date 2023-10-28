@@ -57,8 +57,8 @@ namespace MarsRovers.src.Features.MarsRover
             // Create position struct based on above validated input
             Position = new Position(xOrigin, yOrigin, xAxisBound, yAxisBound, Heading);
 
-            Console.WriteLine("MarsRover input validated.");
-            Console.WriteLine("--------------------------");
+            // Console.WriteLine("MarsRover input validated.");
+            // Console.WriteLine("--------------------------");
         }
 
         public void CalculateMomement()

@@ -1,4 +1,5 @@
 ﻿using MarsRovers.src.Features.MarsRover;
+using System.Runtime.Caching;
 using Spectre.Console;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -6,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Text;
 using System.IO;
-
+using MarsRovers.src.Core.Sctructs;
 
 List<Tuple<string, string, string, string, string, string>> StartManualInput()
 {
@@ -287,18 +288,31 @@ List<Tuple<string, string, string, string, string, string>> StartTextFileInput(s
     return inputList;
 }
 
-void ExecuteMarsRoverCaluclationsInParallel(List<Tuple<string, string, string, string, string, string>> input)
+Dictionary<MarsRover, MarsRover> ExecuteMarsRoverCaluclationsInParallel(List<Tuple<string, string, string, string, string, string>> input)
 {
-    // Declare bag and add Tasks to it concurrently
+    // Create in-memory cache inorder to cache intial MarsRover to reduce space complexity
+    ObjectCache cache = MemoryCache.Default;
+
+    // Create dicitionary to be returned - Use dictionary because retrieving values via. is close to O(1) meaning constant lookup time
+    // Key = Initial MarsRover object, value = MarsRover object after calculation
+    Dictionary<MarsRover, MarsRover> marsRoverKeyValuePairs = new Dictionary<MarsRover, MarsRover>();
+
+    // Declare bag
     ConcurrentBag<MarsRover> cb = new ConcurrentBag<MarsRover>();
 
     // Declare Task list to be added to the bag
     List<Task> bagAddTasks = new List<Task>();
 
-    // Create all MarsRover objects concurrently
+    // Create all MarsRover objects concurrently from input and add them to bag + Dictionary
     foreach (var tuple in input)
     {
+        // Create MarsRover from input
         MarsRover currentRover = new MarsRover(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6);
+
+        // Add inital MarsRover object to dictioanry. Note: all pairings start with two inital values  
+        marsRoverKeyValuePairs.Add(currentRover, currentRover);
+
+        // Add rovers to bag
         bagAddTasks.Add(Task.Run(() => cb.Add(currentRover)));
     }
 
@@ -313,19 +327,32 @@ void ExecuteMarsRoverCaluclationsInParallel(List<Tuple<string, string, string, s
     var watch = new System.Diagnostics.Stopwatch();
     watch.Start();
 
+    // Perform calclations and replace values in dictionary by key - (O)1 complexity
     while (!cb.IsEmpty)
     {
         bagConsumeTasks.Add(Task.Run(() =>
         {
             MarsRover marsRover;
+
             if (cb.TryTake(out marsRover))
             {
+                // Be careful to not replace in-memory cache value as a result of multiple threads running concurrently
+                // Cache inital MarsRover to avoid creating an additional object here - Last 10ms at most
+                cache.Set($"initalRover{itemsInBag}", marsRover, DateTimeOffset.FromUnixTimeMilliseconds(10));
+
+                // Change marsRover to final value to be added to dictionary
                 marsRover.CalculateMomement();
-                Console.WriteLine(marsRover.Position.ToString());
+
+                // Retrieve inital MarsRover value from cache and add <inital, final> values to dictionary
+                // explicit cast object type return from in-memory cache to MarsRover is also required
+                marsRoverKeyValuePairs.Add((MarsRover)cache.Get($"initalRover{itemsInBag}"), marsRover);
+
+                // Increment itemsInBag by refernece to avoid copying the variable from memory
                 Interlocked.Increment(ref itemsInBag);
             }
         }));
     }
+
 
     // Wait for calculations to complete
     Task.WaitAll(bagConsumeTasks.ToArray());
@@ -337,6 +364,8 @@ void ExecuteMarsRoverCaluclationsInParallel(List<Tuple<string, string, string, s
     MarsRover unexpectedMarsRover;
     if (cb.TryPeek(out unexpectedMarsRover))
         Console.WriteLine("Found a Mars Rover in the bag when it should be empty");
+
+    return marsRoverKeyValuePairs;
 }
 
 // Main:
