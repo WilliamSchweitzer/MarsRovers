@@ -18,9 +18,5 @@ namespace MarsRovers.src.Core.Interfaces
         Position Position { get; set; }
 
         Heading Heading { get; set; }
-
-        // direction with bool value 'true' should be considered a positive direction on the given axis
-        
-        void CalculateMomement();
     }
 }
