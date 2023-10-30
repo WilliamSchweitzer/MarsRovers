@@ -98,12 +98,13 @@ namespace MarsRovers.src.Utilities
             string[] concatgridDimensionsWithMarsRoverXYH = Array.Empty<string>();
             int counter = 0;
 
-            // Always run, until stated in code, store first line then take input in groups of 2, else break
+            // Do inital ReadLine outside of loop to correctly increment counter
+            string? input = Console.ReadLine();
 
+
+            // Always run, until stated in code, store first line then take input in groups of 2, else break
             while (true)
             {
-                string? input = Console.ReadLine();
-
                 // Remove all leading and trealing whitespace for all non null inputs
                 if (input != null)
                 {
@@ -207,6 +208,7 @@ namespace MarsRovers.src.Utilities
                     }
                 }
 
+                input = Console.ReadLine();
                 counter++;
             }
             throw new Exception("Major issue in reading instructions");
