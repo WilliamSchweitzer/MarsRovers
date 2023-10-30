@@ -35,21 +35,21 @@ public class Test_MarsRover_Movement
     public void MarsRover_StartsAtNonNegativeXOrigin()
     {
         // Arrange & Act & Assert
-        Assert.ThrowsException<OverflowException>(() => new MarsRover("5", "5", "-1", "0", "N", "LMLMLMLMM"));
+        Assert.ThrowsException<StackOverflowException>(() => new MarsRover("5", "5", "-1", "0", "N", "LMLMLMLMM"));
     }
 
     [TestMethod]
     public void MarsRover_StartsAtNonNegativeYOrigin()
     {
         // Arrange & Act & Assert
-        Assert.ThrowsException<OverflowException>(() => new MarsRover("10", "10", "1", "-4", "N", "LMLMLMLMM"));
+        Assert.ThrowsException<StackOverflowException>(() => new MarsRover("10", "10", "1", "-4", "N", "LMLMLMLMM"));
     }
 
     [TestMethod]
     public void MarsRover_StartsAtNonNegativeXYOrigin()
     {
         // Arrange & Act & Assert
-        Assert.ThrowsException<OverflowException>(() => new MarsRover("10", "10", "-1", "-4", "N", "LMLMLMLMM"));
+        Assert.ThrowsException<StackOverflowException>(() => new MarsRover("10", "10", "-1", "-4", "N", "LMLMLMLMM"));
     }
 
     [TestMethod]

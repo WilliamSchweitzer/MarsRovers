@@ -381,7 +381,7 @@ namespace MarsRovers.src.Utilities
                     table.AddRow("[yellow]Assumption[/] 2: A Mars Rover should not stop running if trying to leave the bounds of it's defined 2D plane.\n");
                     ctx.Refresh();
                     Thread.Sleep(50);
-                    table.AddRow("[yellow]Assumption[/] 3: A Mars Rover should not be passed numerical values that exceed the range of a ulong. Else, the program will stop due to stack overflow exception. \n");
+                    table.AddRow("[yellow]Assumption[/] 3: A Mars Rover should not be passed numerical values that exceed the range of a ulong.\nElse, the program will stop due to stack overflow exception.\nNegative values will be skipped as they generate a FormatException in this case, not a StackOverflow which ruins the integrity of the program.\n");
                     ctx.Refresh();
                     Thread.Sleep(50);
                     table.AddRow("[yellow]Assumption[/] 4: If a Mars Rover is given incorrect input, the program should not fail to execute. Unless assumption 4 is ignored.\n");

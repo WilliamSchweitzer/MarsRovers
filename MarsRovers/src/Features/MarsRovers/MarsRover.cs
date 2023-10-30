@@ -69,7 +69,7 @@ namespace MarsRovers.src.Features.MarsRover
             }
             catch (Exception)
             {
-                // Don't generate user facing error
+                // Don't generate user facing error when negative values are passed to ulongs
             }
 
             // Attempt to convert input given to correct Types. Using null coalescing, convert null inputs to empty values or default direction for Heading case
