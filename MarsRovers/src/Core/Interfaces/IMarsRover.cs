@@ -16,7 +16,5 @@ namespace MarsRovers.src.Core.Interfaces
     internal interface IMarsRover
     {
         Position Position { get; set; }
-
-        Heading Heading { get; set; }
     }
 }

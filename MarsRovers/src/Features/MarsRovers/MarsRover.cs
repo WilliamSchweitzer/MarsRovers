@@ -25,7 +25,6 @@ namespace MarsRovers.src.Features.MarsRover
         public string? uuid; // This was going to be used for key in parallel calculation. Just adding OutputOrder was a much better solution.
         private string? TurnMoveInstructions { get; }
         public Position Position { get; set; }
-        public Heading Heading { get; set; }
         public int OutputOrder { get; set; }
 
         public MarsRover(string? xAxisBoundInput, string? yAxisBoundInput, string? xOriginInput, string? yOriginInput, string? directionalHeadingInput, string? turnMoveInstructionsInput, int outputOrder = -1)
@@ -86,10 +85,10 @@ namespace MarsRovers.src.Features.MarsRover
             }
 
             // Convert input to Heading enum
-            Heading = HeadingConversion.ConvertToHeading(directionalHeading);
+            Heading heading = HeadingConversion.ConvertToHeading(directionalHeading);
             
             // Create position struct based on above validated input
-            Position = new Position(xOrigin, yOrigin, xAxisBound, yAxisBound, Heading);
+            Position = new Position(xOrigin, yOrigin, xAxisBound, yAxisBound, heading);
         }
 
         public Position CalculateMomement()
@@ -130,7 +129,7 @@ namespace MarsRovers.src.Features.MarsRover
 
         public override string ToString()
         {
-            return $"{this.Position.X} {this.Position.Y} {this.Heading}";
+            return $"{this.Position.X} {this.Position.Y} {this.Position.Heading}";
         }
     }
 }
