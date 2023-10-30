@@ -185,7 +185,7 @@ namespace MarsRovers.src.Utilities
                     // Validate correct XYH input
 
                     // Split into array if not null, RemoveEmptyEntries if inital Trim() does not work
-                    if (!string.IsNullOrWhiteSpace(input)
+                    if (!string.IsNullOrWhiteSpace(input))
                     {
                         marsRoverXYH = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
                     }
