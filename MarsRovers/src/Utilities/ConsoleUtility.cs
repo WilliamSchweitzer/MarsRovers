@@ -91,6 +91,7 @@ namespace MarsRovers.src.Utilities
             // string reHeadings = "^[NESW] *$"; Not using as a result of input defaulting to 'N' regardless
 
             string[] fakeXYH = { string.Empty, string.Empty, string.Empty };
+            bool fakedInput = false;
             string? instructionsInput;
             string[] marsRoverXYH = Array.Empty<string>();
             string[] gridDimensions = Array.Empty<string>();
@@ -143,7 +144,7 @@ namespace MarsRovers.src.Utilities
 
                     // First ensure concatgridDimensionsWithMarsRoverXYH is 5 values (Xdim, Ydim, X, Y, H)
                     // Then combine the values from the array and instructionsInput string to create a Tuple + add it to the List
-                    if (concatgridDimensionsWithMarsRoverXYH.Length == 5)
+                    if (concatgridDimensionsWithMarsRoverXYH.Length == 5 && fakedInput == false)
                     {
                         int outputOrder = (counter / 2) - 1;
 
@@ -155,7 +156,7 @@ namespace MarsRovers.src.Utilities
                             instructionsInput,
                             outputOrder));
                     }
-                    else
+                    else // Length is not 5 (not really ever going to happen) and fakedInput is True
                     {
                         // Account for invalid XYH causing the outputOrder to be incorrect - Set outputOrder to -1 to skip output of rover in calculations
                         int outputOrder = -1;
@@ -183,8 +184,8 @@ namespace MarsRovers.src.Utilities
                 {
                     // Validate correct XYH input
 
-                    // Split into array if not null
-                    if (!string.IsNullOrWhiteSpace(input))
+                    // Split into array if not null, RemoveEmptyEntries if inital Trim() does not work
+                    if (!string.IsNullOrWhiteSpace(input), StringSplitOptions.RemoveEmptyEntries)
                     {
                         marsRoverXYH = input.Split(' ');
                     }
@@ -192,11 +193,13 @@ namespace MarsRovers.src.Utilities
                     // If 3 values passed and all values are valid in correct position
                     if (marsRoverXYH.Length == 3 && Regex.IsMatch(marsRoverXYH[0], reDigits) && Regex.IsMatch(marsRoverXYH[1], reDigits)) // && Regex.IsMatch(marsRoverXYH[2], reHeadings))
                     {
+                        fakedInput = false;
                         concatgridDimensionsWithMarsRoverXYH = gridDimensions.Concat(marsRoverXYH).ToArray();
                     }
                     // Else, pass "fake" XYH value and decrement counter by 2 to account for output order
                     else
                     {
+                        fakedInput = true;
                         concatgridDimensionsWithMarsRoverXYH = gridDimensions.Concat(fakeXYH).ToArray();
 
                         // Consider first XYH values being inputed incorrectly must not subtract from counter
@@ -224,6 +227,7 @@ namespace MarsRovers.src.Utilities
             // Store working input values in a strings as well as first input for grid dimensions, Mars Rover X, Y, H values, and instructions
 
             string[] fakeXYH = { string.Empty, string.Empty, string.Empty };
+            bool fakedInput = false;
             string? instructionsInput;
             string[] marsRoverXYH = Array.Empty<string>();
             string[] gridDimensions = Array.Empty<string>();
@@ -278,7 +282,7 @@ namespace MarsRovers.src.Utilities
 
                         // First ensure concatgridDimensionsWithMarsRoverXYH is 5 values (Xdim, Ydim, X, Y, H)
                         // Then combine the values from the array and instructionsInput string to create a Tuple + add it to the List
-                        if (concatgridDimensionsWithMarsRoverXYH.Length == 5)
+                        if (concatgridDimensionsWithMarsRoverXYH.Length == 5 && fakedInput == false)
                         {
                             // Output order is determined by each complete set of rover instructions
                             // Since counter willnever be 0 or 1 here, it is safe to divide by 2 and subtract to get 1,2,3...,X
@@ -292,7 +296,7 @@ namespace MarsRovers.src.Utilities
                                 instructionsInput,
                                 outputOrder));
                         }
-                        else
+                        else // Length is not 5 (not really ever going to happen) and fakedInput is True
                         {
                             // Account for invalid XYH causing the outputOrder to be incorrect - Set outputOrder to -1 to skip output of rover in calculations
                             int outputOrder = -1;
@@ -319,26 +323,24 @@ namespace MarsRovers.src.Utilities
                     // The string passed could be invalid, but not null or whitespace
                     else if ((counter % 2) == 1)
                     {
-                        // Validate correct XYH input
 
-                        // Split into array if not null
+                        // Split into array if not null, RemoveEmptyEntries if inital Trim() does not work
                         if (!string.IsNullOrWhiteSpace(line))
                         {
-                            marsRoverXYH = line.Split(' ');
+                            marsRoverXYH = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
                         }
 
                         // If 3 values passed and all values are valid in correct position
                         if (marsRoverXYH.Length == 3 && Regex.IsMatch(marsRoverXYH[0], reDigits) && Regex.IsMatch(marsRoverXYH[1], reDigits)) // && Regex.IsMatch(marsRoverXYH[2], reHeadings))
                         {
+                            fakedInput = false;
                             concatgridDimensionsWithMarsRoverXYH = gridDimensions.Concat(marsRoverXYH).ToArray();
                         }
-                        // Else, pass "fake" XYH value and increment counter by 2 to account for output order
+                        // Else, pass "fake" XYH value
                         else
                         {
+                            fakedInput = true;
                             concatgridDimensionsWithMarsRoverXYH = gridDimensions.Concat(fakeXYH).ToArray();
-
-                            // Consider first XYH values being inputed incorrectly must not subtract from counter
-                            counter = (counter == 1) ? (counter) : (counter -= 2);
                         }
                     }
 
