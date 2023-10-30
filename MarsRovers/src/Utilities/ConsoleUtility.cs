@@ -135,7 +135,7 @@ namespace MarsRovers.src.Utilities
                     // Else, the 2 Mars Rover grid values X, Y are stored in gridDimensions, to be returned later
                 }
                 // Input is now any even input after the first, and the input can be null, empty, or whitespace - Consider okay because instructions can be empty
-                else if ((counter % 2) == 0 && (counter != 0))
+                else if ((counter % 2) == 0 && (counter > 1))
                 {
                     // Remove leading and trailing whitespace and set instructions equal to "" if null
                     input = input ?? "";
@@ -173,8 +173,8 @@ namespace MarsRovers.src.Utilities
                         counter -= 2;
                     }
                 }
-                // Consider final end of input string, must be odd and empty - return the inputList in this case
-                else if ((counter % 2 == 1) && (counter >= 3) && string.IsNullOrWhiteSpace(input))
+                // Consider final end of input string, must be odd and empty - return the inputList in this case - also consider when only the X Y dimensions are passed the inputlist needs returned (counter == 1)
+                else if ((counter == 1 || ((counter % 2 == 1) && (counter >= 3))) && string.IsNullOrWhiteSpace(input))
                 {
                     return inputList;
                 }
@@ -207,6 +207,7 @@ namespace MarsRovers.src.Utilities
                         counter = (counter == 1) ? (counter) : (counter -= 2);
                     }
                 }
+                else return inputList; // Only the X, Y dimensions were inputted
 
                 input = Console.ReadLine();
                 counter++;
@@ -374,45 +375,39 @@ namespace MarsRovers.src.Utilities
                     table.AddEmptyRow();
                     ctx.Refresh();
                     Thread.Sleep(50);
-                    table.AddRow("[yellow]Assumption[/] 1: A Mars Rover should not stop running if trying to leave the bounds of it's defined 2D plane.\n");
+                    table.AddRow("[yellow]Assumption[/] 1: A Mars Rover should not have the ability to go into the negative X, Y axis as defined by the problem.\n");
                     ctx.Refresh();
                     Thread.Sleep(50);
-                    table.AddRow("[yellow]Assumption[/] 2: A Mars Rover should not have the ability to go into the negative X, Y axis as defined by the problem.\n");
+                    table.AddRow("[yellow]Assumption[/] 2: A Mars Rover should not stop running if trying to leave the bounds of it's defined 2D plane.\n");
                     ctx.Refresh();
                     Thread.Sleep(50);
-                    table.AddRow("[yellow]Assumption[/] 3: A Mars Rover should not stop running if trying to leave the bounds of it's defined 2D plane.\n");
+                    table.AddRow("[yellow]Assumption[/] 3: A Mars Rover should not be passed numerical values that exceed the range of a ulong. Else, the program will stop due to stack overflow exception. \n");
                     ctx.Refresh();
                     Thread.Sleep(50);
-                    table.AddRow("[yellow]Assumption[/] 4: A Mars Rover should not be given a 2D plane that exceeds the range of a ulong on either axis. Else, the program will stop due to stack overflow exception. \n");
+                    table.AddRow("[yellow]Assumption[/] 4: If a Mars Rover is given incorrect input, the program should not fail to execute. Unless assumption 4 is ignored.\n");
                     ctx.Refresh();
                     Thread.Sleep(50);
-                    table.AddRow("[yellow]Assumption[/] 5: If a Mars Rover is given incorrect input, the program should not fail to execute. Unless assumption 4 is ignored.\n");
-                    ctx.Refresh();
-                    Thread.Sleep(50);
-                    table.AddRow("[yellow]Assumption[/] 6: With assumption 5 in mind, the passed X, Y coordiantes and heading, will only [blue]accept inputs with space separated value (SSV) length 3. i.e. 'X Y H'.[/]\nI have not coded to search the input string for correct data given a SSV length <5 or >5.\nWith that being said, 'X Y H' input of valid SSV length, will [blue]default to 'N' heading if an incorrect heading is passed with valid X, Y coords.[/]");
+                    table.AddRow("[yellow]Assumption[/] 5: With assumption 4 in mind, the passed X, Y coordiantes and heading, will only [blue]accept inputs with space separated value (SSV) length 3. i.e. 'X Y H'.[/]\nI have not coded to search the input string for correct data given a SSV length <5 or >5.\nWith that being said, 'X Y H' input of valid SSV length, will [blue]default to 'N' heading if an incorrect heading is passed with valid X, Y coords.[/]");
                     table.AddEmptyRow();
                     ctx.Refresh();
                     Thread.Sleep(50);
-                    table.AddRow("[yellow]Assumption[/] 7: If a Mars Rover is passed 'valid' incorrect instructions, all other Mars Rovers should work correctly, and be outputted in the correct order they were inputted.\n");
+                    table.AddRow("[yellow]Assumption[/] 6: If a Mars Rover is passed 'valid' incorrect instructions, all other Mars Rovers should work correctly, and be outputted in the correct order they were inputted.\n");
                     ctx.Refresh();
                     Thread.Sleep(50);
-                    table.AddRow("[yellow]Assumption[/] 8: The maximum amount of any integer value to be inputed should be no larger than (2^63 + 1)*2. The program will be stopped in this case.\n");
+                    table.AddRow("[yellow]Assumption[/] 7: A Mars Rover can only move 1 value on the X or Y axis at a given time.\n");
                     ctx.Refresh();
                     Thread.Sleep(50);
-                    table.AddRow("[yellow]Assumption[/] 9: A Mars Rover can only move 1 value on the X or Y axis at a given time.\n");
+                    table.AddRow("[yellow]Assumption[/] 8: A Mars Rover can be passed no movement instructions (Empty line) and be expected to not move.\n");
                     ctx.Refresh();
                     Thread.Sleep(50);
-                    table.AddRow("[yellow]Assumption[/] 10: A Mars Rover can be passed no instructions (Empty line) and be expected to not move.\n");
-                    ctx.Refresh();
-                    Thread.Sleep(50);
-                    table.AddRow("[yellow]Assumption[/] 11: Correct X and Y dimension MUST be passed, else the program will prompt for different input. SSV length of 3.\nNote: In math, a 2D plane is described by having more than 1 point that does not lie on the same line. X and Y dimensions cannot equal 0.");
+                    table.AddRow("[yellow]Assumption[/] 9: Correct X and Y dimension MUST be passed, else the program will prompt for different input. SSV length of 2 'X Y'.\nNote: In math, a 2D plane is described by having more than 1 point that does not lie on the same line. X and Y dimensions cannot equal 0.");
                     table.AddEmptyRow();
                     ctx.Refresh();
                     Thread.Sleep(50);
-                    table.AddRow("[yellow]Assumption[/] 12: If the inputted (X, Y) origins exceed the dimensions of the board, they will be set to (0, 0).\n");
+                    table.AddRow("[yellow]Assumption[/] 10: If the inputted (X, Y) origins exceed the dimensions of the board, they will be set to (0, 0).\n");
                     ctx.Refresh();
                     Thread.Sleep(50);
-                    table.AddRow("[lime]Assumption[/] 13: Given this instruction in the problem details:\n");
+                    table.AddRow("[lime]Assumption[/] 11: Given this instruction in the problem details:\n");
                     ctx.Refresh();
                     Thread.Sleep(50);
                     table.AddRow("'Each rover will move in series, i.e. the next rover will not start moving until the one preceding it finishes..'.\n");
