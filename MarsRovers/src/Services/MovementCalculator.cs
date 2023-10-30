@@ -35,7 +35,7 @@ namespace MarsRovers.src.Services
                 }
                 else
                 {
-                    Console.WriteLine("Incorrect instruction skipped.");
+                    // Console.WriteLine("Incorrect instruction skipped."); redundant
                 }
             }
 
