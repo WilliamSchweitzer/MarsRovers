@@ -118,9 +118,16 @@ namespace MarsRovers.src.Utilities
                             // Append results to end of input file if inputted Mars Rovers >= 100 and inputFilePath is not empty
                             if (marsRoverOutput.Count >= 100 && !string.IsNullOrEmpty(inputFilePath)) 
                             {
-                                using (StreamWriter outputFile = new StreamWriter(inputFilePath, true))
+                                try
                                 {
-                                    outputFile.WriteLine(marsRover);
+                                    using (StreamWriter outputFile = new StreamWriter(inputFilePath, true))
+                                    {
+                                        outputFile.WriteLine(marsRover);
+                                    }
+                                }
+                                catch (IOException)
+                                {
+                                    Console.WriteLine("Unable to write to file as it may be in use. Please close the file if it is open.");
                                 }
                             }
                             // Console.WriteLine(marsRover.OutputOrder); - for testing purposes
