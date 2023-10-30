@@ -17,7 +17,7 @@ namespace MarsRovers.src.Utilities
             var inputTypeSelection = AnsiConsole.Prompt(
                 new MultiSelectionPrompt<string>()
                     .PageSize(10)
-                    .Title("You may either [red]manually[/] input data line by line OR input a [green].txt file[/] of lines to read favorite fruits?")
+                    .Title("You may either [red]manually[/] input data line by line OR input a [green].txt file[/] of lines to read.")
                     .MoreChoicesText("[grey](Move up and down to select option)[/]")
                     .InstructionsText("[grey](Press spacebar[blue][/] to toggle an option, [green][/]enter to accept)[/]")
                     .AddChoiceGroup("Input Type", new[]
@@ -49,10 +49,9 @@ namespace MarsRovers.src.Utilities
                     MarsRoverUtility.ExecuteMarsRoverCaluclationsInParallel(manualInput);
                     break;
                 case "Text file (.txt)":
-                    AnsiConsole.Markup("Note: The final line of the text file [deeppink3]MUST[/] be an empty newline. \n");
                     var path = AnsiConsole.Ask<string>("Please input the absolute path to your text file:");
                     List<Tuple<string, string, string, string, string, string, int>> textFileInput = StartTextFileInput(path);
-                    MarsRoverUtility.ExecuteMarsRoverCaluclationsInParallel(textFileInput);
+                    MarsRoverUtility.ExecuteMarsRoverCaluclationsInParallel(textFileInput, path);
                     break;
                 default:
                     throw new NotImplementedException();

@@ -3,6 +3,7 @@ using Spectre.Console;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace MarsRovers.src.Utilities
 {
     public class MarsRoverUtility
     {
-        public static void ExecuteMarsRoverCaluclationsInParallel(List<Tuple<string, string, string, string, string, string, int>> input)
+        public static void ExecuteMarsRoverCaluclationsInParallel(List<Tuple<string, string, string, string, string, string, int>> input, string inputFilePath = "")
         {
             // Count the number of skipped Mars Rovers
             int marsRoverSkipCounter = 0;
@@ -93,7 +94,7 @@ namespace MarsRovers.src.Utilities
                 AnsiConsole.Markup($"There were [lightgreen_1]{itemsInBag}[/] Mars Rovers in the concurrent bag. All [slateblue1]{itemsInBag}[/] calculations took [mediumvioletred]{watch.ElapsedMilliseconds}[/] ms to complete.\n");
 
                 // Prompt user to display results
-                if (AnsiConsole.Confirm("Output Results?"))
+                if (AnsiConsole.Confirm("Output Results? Note: [yellow]If total inputted Mars Rover >= 100, the results will be appended to the input file.[/]"))
                 {
                     // Use dictionary for O(1) time complexity when adding results to output as well as retrieving them for output
                     Dictionary<int, MarsRover> marsRoverOutput = new ();
@@ -113,7 +114,16 @@ namespace MarsRovers.src.Utilities
                         {
                             // Output different colors for fun based on even or odd
                             string outputString = (c % 2 == 0) ? $"[springgreen3]{marsRover}[/]\n" : $"[indianred1]{marsRover}[/]\n";
-                            Console.WriteLine(marsRover.OutputOrder);
+
+                            // Append results to end of input file if inputted Mars Rovers >= 100 and inputFilePath is not empty
+                            if (marsRoverOutput.Count >= 100 && !string.IsNullOrEmpty(inputFilePath)) 
+                            {
+                                using (StreamWriter outputFile = new StreamWriter(inputFilePath, true))
+                                {
+                                    outputFile.WriteLine(marsRover);
+                                }
+                            }
+                            // Console.WriteLine(marsRover.OutputOrder); - for testing purposes
                             AnsiConsole.Markup(outputString);
                         }
                         else
@@ -122,7 +132,11 @@ namespace MarsRovers.src.Utilities
                         }
                     }
 
-                    Console.WriteLine(marsRoverSkipCounter + " total Mars Rover instructions skipped.");
+                    // Finally output skipped mars rovers if there are any
+                    if (marsRoverSkipCounter > 0)
+                    {
+                        Console.WriteLine(marsRoverSkipCounter + " total Mars Rover skipped as a result of invalid instructions.");
+                    }
                 }
             }
             else
