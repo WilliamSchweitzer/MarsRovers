@@ -130,8 +130,11 @@ namespace MarsRovers.src.Utilities
                                     Console.WriteLine("Unable to write to file as it may be in use. Please close the file if it is open.");
                                 }
                             }
-                            // Console.WriteLine(marsRover.OutputOrder); - for testing purposes
-                            AnsiConsole.Markup(outputString);
+                            else
+                            {
+                                // Console.WriteLine(marsRover.OutputOrder); - for testing purposes
+                                AnsiConsole.Markup(outputString)
+                            }
                         }
                         else
                         {
