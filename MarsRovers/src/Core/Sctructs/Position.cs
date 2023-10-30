@@ -84,6 +84,6 @@ namespace MarsRovers.src.Core.Sctructs
             Heading = heading;
         }
 
-        public override string ToString() => $"{X} {Y} {Heading}";
+        public readonly override string ToString() => $"{X} {Y} {Heading}";
     }
 }

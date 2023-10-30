@@ -3,13 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MarsRovers.src.Features.MarsRovers
 {
     internal static class UUID
     {
-        public static HashSet<string> UUIDS = new HashSet<string>();
+        public static HashSet<string> UUIDS = new ();
 
         internal static string RecursivelyGenerateUUID(string currentUUID = "")
         {
@@ -35,7 +36,6 @@ namespace MarsRovers.src.Features.MarsRovers
                     return RecursivelyGenerateUUID(string.Empty);
                 }
             }
-
         }
     }
 }
