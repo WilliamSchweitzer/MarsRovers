@@ -10,8 +10,8 @@ namespace MarsRovers.src.Core.Interfaces
 {
     internal interface IMovementCalculator
     {
-        // Position assumes that the MarsRover does not with to breakdown when attempting to exiting boundaries.
-        // Therefore, the MarsRover will hold position untill receiving a valid movement command.
+        // Position assumes that the MarsRover does not wish to breakdown when attempting to exiting boundaries.
+        // Therefore, the MarsRover will hold position until receiving a valid movement command.
         // Calculate movement given movementInstructions, headingDirection, and position. Return the resulting Position and headingDirection.
         // Although input may be null, return value must always be not null.
 
