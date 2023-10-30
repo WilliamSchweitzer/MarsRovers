@@ -133,7 +133,7 @@ namespace MarsRovers.src.Utilities
                             else
                             {
                                 // Console.WriteLine(marsRover.OutputOrder); - for testing purposes
-                                AnsiConsole.Markup(outputString)
+                                AnsiConsole.Markup(outputString);
                             }
                         }
                         else
