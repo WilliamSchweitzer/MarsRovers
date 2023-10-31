@@ -1,4 +1,5 @@
-﻿using Spectre.Console;
+﻿using MarsRovers.src.Core.Structs;
+using Spectre.Console;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,12 +46,12 @@ namespace MarsRovers.src.Utilities
             switch (inputType)
             {
                 case "Manual":
-                    List<Tuple<string, string, string, string, string, string, int>> manualInput = StartManualInput();
+                    List<MarsRoverInput> manualInput = StartManualInput();
                     MarsRoverUtility.ExecuteMarsRoverCaluclationsInParallel(manualInput);
                     break;
                 case "Text file (.txt)":
                     var path = AnsiConsole.Ask<string>("Please input the absolute path to your text file:");
-                    List<Tuple<string, string, string, string, string, string, int>> textFileInput = StartTextFileInput(path);
+                    List<MarsRoverInput> textFileInput = StartTextFileInput(path);
                     MarsRoverUtility.ExecuteMarsRoverCaluclationsInParallel(textFileInput, path);
                     break;
                 default:
@@ -76,12 +77,12 @@ namespace MarsRovers.src.Utilities
 
         }
 
-        public static List<Tuple<string, string, string, string, string, string, int>> StartManualInput()
+        public static List<MarsRoverInput> StartManualInput()
         {
-            AnsiConsole.Markup("You may being entering instructions line by line. [deeppink3]Return an empty line to stop.[/]\n");
+            AnsiConsole.Markup("You may begin entering instructions line by line. [deeppink3]Return an empty line to stop.[/]\n");
 
             // Use list because input size is unknown, Use Tuple to store and return all values unique to a Mars Rover together
-            List<Tuple<string, string, string, string, string, string, int>> inputList = new ();
+            List<MarsRoverInput> inputList = new ();
 
             // Store working input value in a string as well as first input for grid dimensions, Mars Rover X, Y, H values, and instrucitions
 
@@ -149,7 +150,7 @@ namespace MarsRovers.src.Utilities
                     {
                         int outputOrder = (counter / 2) - 1;
 
-                        inputList.Add(Tuple.Create(concatgridDimensionsWithMarsRoverXYH[0],
+                        inputList.Add(new MarsRoverInput(concatgridDimensionsWithMarsRoverXYH[0],
                             concatgridDimensionsWithMarsRoverXYH[1],
                             concatgridDimensionsWithMarsRoverXYH[2],
                             concatgridDimensionsWithMarsRoverXYH[3],
@@ -162,7 +163,7 @@ namespace MarsRovers.src.Utilities
                         // Account for invalid XYH causing the outputOrder to be incorrect - Set outputOrder to -1 to skip output of rover in calculations
                         int outputOrder = -1;
 
-                        inputList.Add(Tuple.Create(concatgridDimensionsWithMarsRoverXYH[0],
+                        inputList.Add(new MarsRoverInput(concatgridDimensionsWithMarsRoverXYH[0],
                             concatgridDimensionsWithMarsRoverXYH[1],
                             concatgridDimensionsWithMarsRoverXYH[2],
                             concatgridDimensionsWithMarsRoverXYH[3],
@@ -215,12 +216,12 @@ namespace MarsRovers.src.Utilities
             throw new Exception("Major issue in reading instructions");
         }
 
-        public static List<Tuple<string, string, string, string, string, string, int>> StartTextFileInput(string pathToFile)
+        public static List<MarsRoverInput> StartTextFileInput(string pathToFile)
         {
             AnsiConsole.Markup("[deeppink3]Attemping to read file...[/]\n");
 
             // Use list because input size is unknown, Use Tuple to store and return all values unique to a Mars Rover together
-            List<Tuple<string, string, string, string, string, string, int>> inputList = new ();
+            List<MarsRoverInput> inputList = new ();
 
             // Regex to use to validate input
             string reDigits = "^[0-9]*$";
@@ -291,7 +292,7 @@ namespace MarsRovers.src.Utilities
                             // Since counter willnever be 0 or 1 here, it is safe to divide by 2 and subtract to get 1,2,3...,X
                             int outputOrder = (counter / 2) - 1;
 
-                            inputList.Add(Tuple.Create(concatgridDimensionsWithMarsRoverXYH[0],
+                            inputList.Add(new MarsRoverInput(concatgridDimensionsWithMarsRoverXYH[0],
                                 concatgridDimensionsWithMarsRoverXYH[1],
                                 concatgridDimensionsWithMarsRoverXYH[2],
                                 concatgridDimensionsWithMarsRoverXYH[3],
@@ -304,7 +305,7 @@ namespace MarsRovers.src.Utilities
                             // Account for invalid XYH causing the outputOrder to be incorrect - Set outputOrder to -1 to skip output of rover in calculations
                             int outputOrder = -1;
 
-                            inputList.Add(Tuple.Create(concatgridDimensionsWithMarsRoverXYH[0],
+                            inputList.Add(new MarsRoverInput(concatgridDimensionsWithMarsRoverXYH[0],
                                 concatgridDimensionsWithMarsRoverXYH[1],
                                 concatgridDimensionsWithMarsRoverXYH[2],
                                 concatgridDimensionsWithMarsRoverXYH[3],

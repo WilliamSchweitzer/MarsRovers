@@ -17,13 +17,14 @@ namespace MarsRovers.src.Features.MarsRover
 {
     public class MarsRover : IMarsRover
     {
-        private ulong xAxisBound;
-        private ulong yAxisBound;
-        private ulong xOrigin;
-        private ulong yOrigin;
-        private char directionalHeading;
-        public string? uuid; // This was going to be used for key in parallel calculation. Just adding OutputOrder was a much better solution.
-        private string? TurnMoveInstructions { get; }
+        private ulong _XAxisBound;
+        private ulong _YAxisBound;
+        private ulong _XOrigin;
+        private ulong _YOrigin;
+        private char _DirectionalHeading;
+        private string? _TurnMoveInstructions { get; }
+
+        public string? Uuid { get; } // This was going to be used for key in parallel calculation. Just adding OutputOrder was a much better solution.
         public Position Position { get; set; }
         public int OutputOrder { get; set; }
 
@@ -34,27 +35,27 @@ namespace MarsRovers.src.Features.MarsRover
             try
             {
                 OutputOrder = outputOrder;
-                uuid = UUID.RecursivelyGenerateUUID();
-                xAxisBound = Convert.ToUInt64(xAxisBoundInput);
-                yAxisBound = Convert.ToUInt64(yAxisBoundInput);
-                xOrigin = Convert.ToUInt64(xOriginInput);
-                yOrigin = Convert.ToUInt64(yOriginInput);
+                Uuid = UUID.RecursivelyGenerateUUID();
+                _XAxisBound = Convert.ToUInt64(xAxisBoundInput);
+                _YAxisBound = Convert.ToUInt64(yAxisBoundInput);
+                _XOrigin = Convert.ToUInt64(xOriginInput);
+                _YOrigin = Convert.ToUInt64(yOriginInput);
 
                 // In math, a 2D plane is described by having more than 1 point that does not lie on the same line. X and Y dimensions cannot equal 0.
-                if (xAxisBound == 0 || yAxisBound == 0)
+                if (_XAxisBound == 0 || _YAxisBound == 0)
                 {
                     throw new ArgumentException("In math, a 2D plane is described by having more than 1 point that does not lie on the same line. X and Y dimensions cannot equal 0.");
                 }
 
                 // If the inputted (X, Y) origins exceed the dimensions of the board, they will be set to (0, 0)
-                if (xOrigin > xAxisBound)
+                if (_XOrigin > _XAxisBound)
                 {
-                    xOrigin = 0; 
+                    _XOrigin = 0; 
                 }
 
-                if (yOrigin > yAxisBound)
+                if (_YOrigin > _YAxisBound)
                 {
-                    yOrigin = 0;
+                    _YOrigin = 0;
                 }
             }
             //catch (FormatException)
@@ -76,8 +77,8 @@ namespace MarsRovers.src.Features.MarsRover
 
             try
             {
-                directionalHeading = Convert.ToChar(directionalHeadingInput ?? "N");
-                TurnMoveInstructions = turnMoveInstructionsInput ?? "";
+                _DirectionalHeading = Convert.ToChar(directionalHeadingInput ?? "N");
+                _TurnMoveInstructions = turnMoveInstructionsInput ?? "";
             }
             catch (Exception)
             {
@@ -85,17 +86,17 @@ namespace MarsRovers.src.Features.MarsRover
             }
 
             // Convert input to Heading enum
-            Heading heading = HeadingConversion.ConvertToHeading(directionalHeading);
+            Heading heading = HeadingConversion.ConvertToHeading(_DirectionalHeading);
             
             // Create position struct based on above validated input
-            Position = new Position(xOrigin, yOrigin, xAxisBound, yAxisBound, heading);
+            Position = new Position(_XOrigin, _YOrigin, _XAxisBound, _YAxisBound, heading);
         }
 
         public Position CalculateMomement()
         {
             // Call out to MovementCalculator algorithm defined in services
             MovementCalculator marsRoverCalculator = new ();
-            Position = marsRoverCalculator.Calculate(TurnMoveInstructions ?? "", Position);
+            Position = marsRoverCalculator.Calculate(_TurnMoveInstructions ?? "", Position);
             return Position;
         }
 
