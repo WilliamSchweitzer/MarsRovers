@@ -39,7 +39,7 @@ namespace MarsRovers.src.Utilities
 
 
                 // Add rovers to bag if the input was valid and object created did not throw an exception -> OutputOrder != -1
-                if (!(String.IsNullOrEmpty(mr.XOrigin) || String.IsNullOrEmpty(mr.YOrigin) || String.IsNullOrEmpty(mr.DirectionalHeading) || String.IsNullOrEmpty(mr.TurnMoveInstructions)) && currentRover.OutputOrder != -1)
+                if (!(String.IsNullOrEmpty(mr.XOrigin) || String.IsNullOrEmpty(mr.YOrigin) || String.IsNullOrEmpty(mr.DirectionalHeading)) && currentRover.OutputOrder != -1)
                 {
                     bagAddTasks.Add(Task.Run(() => marsRoverCalculations.Add(currentRover)));
                 }
