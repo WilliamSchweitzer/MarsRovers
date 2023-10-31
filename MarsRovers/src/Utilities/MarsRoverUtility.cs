@@ -1,4 +1,5 @@
-﻿using MarsRovers.src.Features.MarsRover;
+﻿using MarsRovers.src.Core.Structs;
+using MarsRovers.src.Features.MarsRover;
 using Spectre.Console;
 using System;
 using System.Collections.Concurrent;
@@ -12,7 +13,7 @@ namespace MarsRovers.src.Utilities
 {
     public class MarsRoverUtility
     {
-        public static void ExecuteMarsRoverCaluclationsInParallel(List<Tuple<string, string, string, string, string, string, int>> input, string inputFilePath = "")
+        public static void ExecuteMarsRoverCaluclationsInParallel(List<MarsRoverInput> input, string inputFilePath = "")
         {
             // Count the number of skipped Mars Rovers
             int marsRoverSkipCounter = 0;
@@ -27,18 +28,18 @@ namespace MarsRovers.src.Utilities
             List<Task> bagAddTasks = new ();
 
             // Create all MarsRover objects concurrently from input and add them to bag + Dictionary
-            foreach (var tuple in input)
+            foreach (var mr in input)
             {
                 // Create MarsRover from input
 
-                MarsRover currentRover = new (tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7);
+                MarsRover currentRover = new (mr.XAxisBound, mr.YAxisBound, mr.XOrigin, mr.YOrigin, mr.DirectionalHeading, mr.TurnMoveInstructions, mr.OutputOrder);
 
                 // Ensure no null rovers are added to marsRoverCalculations by generating default non null value
                 currentRover =  currentRover ?? new(String.Empty, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty);
 
 
                 // Add rovers to bag if the input was valid and object created did not throw an exception -> OutputOrder != -1
-                if (!(String.IsNullOrEmpty(tuple.Item3) || String.IsNullOrEmpty(tuple.Item4) || String.IsNullOrEmpty(tuple.Item5) || String.IsNullOrEmpty(tuple.Item6)) && currentRover.OutputOrder != -1)
+                if (!(String.IsNullOrEmpty(mr.XOrigin) || String.IsNullOrEmpty(mr.YOrigin) || String.IsNullOrEmpty(mr.DirectionalHeading) || String.IsNullOrEmpty(mr.TurnMoveInstructions)) && currentRover.OutputOrder != -1)
                 {
                     bagAddTasks.Add(Task.Run(() => marsRoverCalculations.Add(currentRover)));
                 }

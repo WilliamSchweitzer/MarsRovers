@@ -18,5 +18,16 @@ namespace MarsRovers.src.Core.Structs
         public string DirectionalHeading;
         public string TurnMoveInstructions;
         public int OutputOrder;
+
+        public MarsRoverInput(string xAxisBound, string yAxisBound, string xOrigin, string yOrigin, string directionalHeading, string TurnMoveInstructions, int OutputOrder = -1)
+        {
+            this.XAxisBound = xAxisBound;
+            this.YAxisBound = yAxisBound;
+            this.XOrigin = xOrigin;
+            this.YOrigin = yOrigin;
+            this.DirectionalHeading = directionalHeading;
+            this.TurnMoveInstructions = TurnMoveInstructions;
+            this.OutputOrder = OutputOrder;
+        }
     }
 }
