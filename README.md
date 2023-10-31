@@ -3,6 +3,7 @@
 :sparkles: *Try the input text file 211200roversLongInstructions.txt to see the full capabilities of this console app* :sparkles:
 
 My PC was able to compute the new position of all 211200 "rovers" in 1041ms.
+
 ![1041ms for 211200 rovers]("211200roversScreenshot.jpg")
 
 ## TODO
