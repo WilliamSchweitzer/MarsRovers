@@ -1,6 +1,6 @@
 # MarsRovers
 
-:sparkles: *Try the input text file 211200roversLongInstructions.txt to see the full capabilities of this console app* :sparkles:
+:sparkles: *Try the input text file TestInputs/211200roversLongInstructions.txt to see the full capabilities of this console app* :sparkles:
 
 I had to compress the text file because it was too large for GitHub.
 
