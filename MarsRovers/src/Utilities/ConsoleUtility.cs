@@ -78,7 +78,7 @@ namespace MarsRovers.src.Utilities
 
         public static List<Tuple<string, string, string, string, string, string, int>> StartManualInput()
         {
-            AnsiConsole.Markup("You may being entering instructions line by line. [deeppink3]Return an empty line to stop.[/]\n");
+            AnsiConsole.Markup("You may begin entering instructions line by line. [deeppink3]Return an empty line to stop.[/]\n");
 
             // Use list because input size is unknown, Use Tuple to store and return all values unique to a Mars Rover together
             List<Tuple<string, string, string, string, string, string, int>> inputList = new ();
