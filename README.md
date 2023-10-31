@@ -4,7 +4,7 @@
 
 I had to compress the text file because it was too large for GitHub.
 
-My PC was able to compute the new position of all 211200 "rovers" in 1041ms.
+My PC was able to compute the new position of all 211200 "rovers" in 1401ms.
 
 ![1041ms for 211200 rovers](Images/211200roversScreenshot.jpg?raw=true)
 
