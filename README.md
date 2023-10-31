@@ -6,7 +6,7 @@ I had to compress the text file because it was too large for GitHub.
 
 My PC was able to compute the new position of all 211200 "rovers" in 1041ms.
 
-![1041ms for 211200 rovers](211200roversScreenshot.jpg?raw=true)
+![1041ms for 211200 rovers](Images/211200roversScreenshot.jpg?raw=true)
 
 ## TODO
 - [x] Implement input from users via ConsoleApp
