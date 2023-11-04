@@ -100,13 +100,12 @@ namespace MarsRovers.src.Utilities
                     // Use dictionary for O(1) time complexity when adding results to output as well as retrieving them for output
                     Dictionary<int, MarsRover> marsRoverOutput = new ();
 
-                    var test = marsRoverResults.ToArray();
-
                     // FIFO - Loop through each item and store in outputArroutputMarsRovers dict based on OutputOrder - O(N*1) Time complexity
-                    foreach (MarsRover marsRover in test)
-                    {
-                        marsRoverOutput.Add(marsRover.OutputOrder, marsRover);
-                    }
+
+		    foreach(var mr in marsRoverResults)
+		    {
+			marsRoverOutput.Add(mr.OutputOrder, mr);
+		    }
 
                     // Based on sorted liftime array, output Mars Rover results from Dictionary
                     for (int c = 0; c < marsRoverOutput.Count; c++)
