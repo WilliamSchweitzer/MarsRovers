@@ -371,7 +371,7 @@ namespace MarsRovers.src.Utilities
             AnsiConsole.Live(table)
                 .Start(ctx =>
                 {
-                    table.AddColumn("Welcome to [underline red]Will Schweitzer's[/] [indianred1]Mars[/] Rovers - Coding Test Solution for [blue3]Dealer[/][darkorange3]On[/]");
+                    table.AddColumn("Welcome to [underline red]Will Schweitzer's[/] [indianred1]Mars[/] Rovers Console Application");
                     table.AddRow("[red]Note[/]: A Mars Rover's movement instructions are coded to ONLY respond to the inputs defined in the problem ('L', 'R', and 'M'). Additonally, instructions are expected to be given line by line as defined in the problem task. Therefore, wrongly inputed instructions will be skipped.\n");
                     table.AddEmptyRow();
                     ctx.Refresh();
